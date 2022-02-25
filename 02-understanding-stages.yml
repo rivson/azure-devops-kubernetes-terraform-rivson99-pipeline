@@ -35,11 +35,11 @@ stages:
   # - job: SecondJob
   #   steps:
   #   - bash: echo Build SecondJob
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
 # - stage: DevDeploy
 #   variables:
 #     environment: Dev
