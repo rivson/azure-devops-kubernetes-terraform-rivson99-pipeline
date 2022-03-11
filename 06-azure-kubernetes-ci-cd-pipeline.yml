@@ -64,7 +64,7 @@ stages:
     - task: DownloadBuildArtifacts@1
       inputs:
         buildType: 'current'
-        downloadType: 'single'
+        #downloadType: 'single'
         artifactName: 'manifests'
         itemPattern: '**/*.yaml'
         downloadPath: '$(System.ArtifactsDirectory)'
