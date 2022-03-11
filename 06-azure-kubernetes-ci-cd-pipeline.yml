@@ -16,7 +16,8 @@ resources:
 - repo: self
 
 variables:
-  tag: '$(Build.BuildId)'
+  tag: 28
+  #'$(Build.BuildId)'
 
 stages:
 - stage: Build
@@ -27,14 +28,14 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        containerRegistry: 'rivson99-docker-hub'
-        repository: 'rivson99/currency-exchange-devops'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: '$(tag)'
+    # - task: Docker@2
+    #   displayName: Build an image
+    #   inputs:
+    #     containerRegistry: 'rivson99-docker-hub'
+    #     repository: 'rivson99/currency-exchange-devops'
+    #     command: 'buildAndPush'
+    #     Dockerfile: '**/Dockerfile'
+    #     tags: '$(tag)'
 
 #copy files
     - task: CopyFiles@2
@@ -50,7 +51,6 @@ stages:
         ArtifactName: 'manifests'
         publishLocation: 'Container'
 
-#Download the K8S Files
 - stage: Deploy
   displayName: Deploy image
   jobs:
@@ -74,5 +74,5 @@ stages:
         action: 'deploy'
         kubernetesServiceConnection: 'azure-kubernetes-connection'
         namespace: 'default'
-        manifests: '$(System.ArtifactsDirectory)/deployment.yaml'
+        manifests: '$(System.ArtifactsDirectory)/configuration/kubernetes/deployment.yaml'
         containers: 'rivson99/currency-exchange-devops:$(tag)'
