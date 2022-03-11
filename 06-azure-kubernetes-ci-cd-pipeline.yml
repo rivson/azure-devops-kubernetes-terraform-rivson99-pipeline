@@ -66,7 +66,7 @@ stages:
         downloadType: 'single'
         artifactName: 'manifests'
         itemPattern: '**/*.yaml'
-        downloadPath: '$(System.ArtifactsDirectory)'
+        downloadPath: '$(System.ArtifactsDirectory)/manifests'
 
 #Deploy to K8S Cluster with Docker Image (deploy to kubernetes)
     - task: KubernetesManifest@0
