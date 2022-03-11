@@ -1,0 +1,79 @@
+#Stage 1
+#Build Docker Image
+#Publish K8S Files (Publish build artifacts)
+
+#Stage 2
+#Download the K8S Files
+#Deploy to K8S Cluster with Docker Image
+
+
+# Docker
+# Build a Docker image
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: 23 
+  #'$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # - task: Docker@2
+    #   displayName: Build an image
+    #   inputs:
+    #     containerRegistry: 'rivson99-docker-hub'
+    #     repository: 'rivson99/currency-exchange-devops'
+    #     command: 'buildAndPush'
+    #     Dockerfile: '**/Dockerfile'
+    #     tags: '$(tag)'
+
+#copy files
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: '**/*.yaml'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+#Publish K8S Files (Publish build artifacts)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'manifests'
+        publishLocation: 'Container'
+
+#Download the K8S Files
+- stage: Deploy
+  displayName: Deploy image
+  jobs:
+  - job: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    #download build artifact
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'manifests'
+        itemPattern: '**/*.yaml'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
+#Deploy to K8S Cluster with Docker Image (deploy to kubernetes)
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'azure-kubernetes-connection'
+        namespace: 'default'
+        manifests: '$(System.ArtifactsDirectory)/configuration/kubernetes/deployment.yaml'
+        containers: 'rivson99/currency-exchange-devops:$(tag)'
