@@ -74,5 +74,5 @@ stages:
         action: 'deploy'
         kubernetesServiceConnection: 'azure-kubernetes-connection'
         namespace: 'default'
-        manifests: '$(System.ArtifactsDirectory)/manifests/deployment.yaml'
+        manifests: '$(Pipeline.Workspace)/manifests/deployment.yaml'
         containers: 'rivson99/currency-exchange-devops:$(tag)'
