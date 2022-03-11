@@ -16,7 +16,7 @@ resources:
 - repo: self
 
 variables:
-  tag: 23 
+  tag: 28 
   #'$(Build.BuildId)'
 
 stages:
@@ -75,5 +75,5 @@ stages:
         action: 'deploy'
         kubernetesServiceConnection: 'azure-kubernetes-connection'
         namespace: 'default'
-        manifests: '$(System.ArtifactsDirectory)\configuration\kubernetes\deployment.yaml'
+        manifests: '$(System.ArtifactsDirectory)/configuration/kubernetes/deployment.yaml'
         containers: 'rivson99/currency-exchange-devops:$(tag)'
